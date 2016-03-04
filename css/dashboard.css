@@ -1,0 +1,19 @@
+
+#elements_first_page {
+	width:90%;
+	margin: auto;
+}
+ 
+#raw_data_table {
+	width:90%;
+	margin: auto;
+}
+
+#data_table_by_user {
+	width:90%;
+	margin: auto;
+}
+.padAround {
+	padding-top: 5%;
+	padding-bottom: 5%;
+}

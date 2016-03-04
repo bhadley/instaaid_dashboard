@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>InstaAid Dashboard</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+    body {
+        padding-top: 70px;
+        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href='javascript:displayFrontPage()'>Home</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                   <!-- <li>
+                        <a href="#">About</a>
+                    </li> !-->
+                    <li>
+                        <a href='javascript:rawData()'> Raw Data Table</a>
+                    </li>
+                    <li>
+                        <a href='javascript:dataByUser()'> Data Table By User </a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h4 class="text-danger">IN PROGRESS</h4>
+                <h1>InstaAid Dashboard</h1>
+                <h4 class="lead">For The Boston Home</h4>
+            </div>
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <div class="container padAround" id="status_badges">
+
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+
+                <div class="panel status panel-danger">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center" id="totalRequestsStatus"></h1>
+                    </div>
+                    <div class="panel-body text-center">                        
+                        <strong>Total Requests Made</strong>
+                        <p> since Jan 2015 </p>
+                    </div>
+                </div>
+
+            </div>          
+            <div class="col-xs-6 col-md-3">
+
+                <div class="panel status panel-warning">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center" id="requestsThisMonthStatus"></h1>
+                    </div>
+                    <div class="panel-body text-center">                        
+                        <strong>Requests Made This Month</strong>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xs-6 col-md-3">
+
+                <div class="panel status panel-success">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center" id="responseTime"></h1>
+                    </div>
+                    <div class="panel-body text-center">                        
+                        <strong>Median Response Time</strong>
+                        <p> This Month </p>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-xs-6 col-md-3">
+
+                <div class="panel status panel-info">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center" id="userOne"></h1>
+                        <h1 class="panel-title text-center" id="userTwo"></h1>
+                        <h1 class="panel-title text-center" id="userThree"></h1>
+                    </div>
+                    <div class="panel-body text-center">                        
+                        <strong>Top 3 Recent Users</strong>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div id="elements_first_page">
+
+        <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3 class="panel-title">Breakdown of All Requests Made</h3>
+        </div>
+        <div class="panel-body">
+            <p> This bar chart displays a breakdown of all requests made using the InstaAid application since it was deployed in January 2015. </p> 
+            <div id="chart_div"></div>
+        </div>
+    </div>
+
+    <div class = 'padAround'>
+        <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3 class="panel-title">Usage by Date</h3>
+        </div>
+        <div class="panel-body">
+            <p> This is a calendar that displays how many actions were logged on any given day. An event is logged when a request is made, cancelled, or processed by either a user or a nurse. Select a specific user from the dropdown menu to view only their usage. Default is to display data for all users. Max on any day is capped at 40.</p>
+            <select id="user" class="form-control" onchange="userSelected()">
+                <option>ALL USERS</option>
+            </select>
+            <br>
+            <div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- gauge isn't used -->
+<div id="gauge_div" style="width: 400px; height: 120px;"></div>
+</div>
+
+
+
+<div id="raw_data_table" class="padAround" style="display: none">
+
+    <div class="panel panel-default">
+     <div class="panel-heading">
+        <h3 class="panel-title">Raw Data Table</h3>
+    </div>
+    <div class="panel-body">
+        <p> This is just a simple listing of all data logged by the system. Selecting a month from the dropdown menu will display only data from that month. </p> 
+        <select id="dataSince" class="form-control"  onchange="dataSince()">
+            <option>Current month</option>
+        </select>
+        <br>
+        <div id="all_items_table_div" ></div>
+    </div>
+</div>
+
+
+
+</div>
+
+
+<div id="data_table_by_user" class="padAround" style="display: none">
+
+   <div class="panel panel-default">
+     <div class="panel-heading">
+        <h3 class="panel-title">Data Table By User</h3>
+    </div>
+    <div class="panel-body">
+        <p> This is a listing of each user's usage from the beginning of the launch of the app. </p> 
+        <br>
+        <div id="table_div" ></div>
+    </div>
+</div>
+</div>
+
+
+
+
+<!-- jQuery Version 1.11.1 -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<script src="instaAidScript.js"></script>
+
+<script text="javasctip">
+
+function rawData() {
+    $(document.getElementById('raw_data_table')).show();
+    $(document.getElementById('elements_first_page')).hide();
+    $(document.getElementById('status_badges')).hide();
+    $(document.getElementById('data_table_by_user')).hide();
+}
+
+function displayFrontPage() {
+    $(document.getElementById('raw_data_table')).hide();
+    $(document.getElementById('elements_first_page')).show();
+    $(document.getElementById('status_badges')).show();
+    $(document.getElementById('data_table_by_user')).hide();
+}
+
+function dataByUser() {
+    $(document.getElementById('raw_data_table')).hide();
+    $(document.getElementById('elements_first_page')).hide();
+    $(document.getElementById('status_badges')).hide();
+    $(document.getElementById('data_table_by_user')).show();
+}
+</script>
+
+
+</body>
+
+</html>
